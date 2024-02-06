@@ -1,13 +1,13 @@
 #![allow(dead_code, unused_variables)]
+use std::collections::HashSet;
 
-pub fn part1(lines: &mut Vec<String>) -> i32 {
-    use std::collections::HashSet;
+pub fn part1(puzzle_input: &mut Vec<String>) -> i32 {
     
     let mut sum: u32 = 0;        
     let lower_offset: u32 = 96;
     let upper_offset: u32 = 64 - 26;
     
-    for (i,str) in lines.iter().enumerate() {
+    for (i,str) in puzzle_input.iter().enumerate() {
         let mut used_characters: HashSet<u32> = HashSet::new();
         let backpack: Vec<u32> = str
             .chars()
@@ -31,50 +31,82 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
     return sum as i32;
 }
 
-// pub fn part1_pure(lines: &mut Vec<String>) -> i32 {
-//     use std::collections::HashSet;
-//     return lines
-//         .iter()
-//         .map(|line| -> Result<_> {
-//             let (first, second) = line.split_at(line.len() / 2);
-//             let first_items = first
-//                 .bytes()
-//                 .map(|val| match val {
-//                     b'a'..=b'z' | b'A'..=b'Z' => Ok(val),
-//                     _ => Err(val),
-//                 })
-//                 .collect::<Result<HashSet<_>, _>>()?;
-//             process_results(second.bytes().map(|val| match val {
-//                 b'a'..=b'z' | b'A'..=b'Z' => Ok(val),
-//                 _ => Err(val),
-//             }), |mut it| {
-//                 it.find(|&item| first_items.contains(&item))
-//                     .map(|item| dbg!(item.score()))
-//                     .ok_or_else(|| println!("compartments have no items in common"))
-//             })
-//         })
-//         .sum();
-// }
 
-pub fn part2(lines: &mut Vec<String>) -> i32 {
-    // split lines into groups of 3 
-    let groups: Vec<Vec<String>> = lines
+pub fn part2(puzzle_input: &mut Vec<String>) -> i32 {
+    let mut set: HashSet<i32> = HashSet::new();
+    let upper_offset: i32 = 64 - 26;
+    let lower_offset: i32 = 96;
+    let mut sum: i32 = 0;
+
+    let groups: Vec<Vec<Vec<i32>>>  = puzzle_input
+        .chunks(3)
+        .map(|chunk| {
+            chunk.to_vec()
+                .iter()
+                .map(|x| {
+                    x.chars()
+                        .map(|x| {
+                            let temp = x as i32;
+                            if temp > lower_offset { return temp - lower_offset } // lower_case
+                            return temp - upper_offset // convert upper case
+                        })
+                        .collect::<Vec<i32>>()
+                })
+                .collect::<Vec<Vec<i32>>>()
+        })
+        .collect::<Vec<Vec<Vec<i32>>>>(); // it.. just works
+
+    for group in groups.iter() {
+        let first:  &Vec<i32> = &group[0];
+        let second: &Vec<i32> = &group[1];
+        let third:  &Vec<i32> = &group[2];
+        
+        for c1 in first.iter() {
+            for c2 in second.iter() {
+                for c3 in third.iter() {
+                    if c1 == c2 && c2 == c3 && !set.contains(c1) { set.insert(*c1); }
+                }
+            }
+        }
+        sum += set.iter().sum::<i32>();
+        set.clear();
+    }
+    return sum;
+}
+
+/* 
+pub fn part1_pure(puzzle_input: &mut Vec<String>) -> i32 {
+    use std::collections::HashSet;
+    return puzzle_input
+        .iter()
+        .map(|line| -> Result<_> {
+            let (first, second) = line.split_at(line.len() / 2);
+            let first_items = first
+                .bytes()
+                .map(|val| match val {
+                    b'a'..=b'z' | b'A'..=b'Z' => Ok(val),
+                    _ => Err(val),
+                })
+                .collect::<Result<HashSet<_>, _>>()?;
+            process_results(second.bytes().map(|val| match val {
+                b'a'..=b'z' | b'A'..=b'Z' => Ok(val),
+                _ => Err(val),
+            }), |mut it| {
+                it.find(|&item| first_items.contains(&item))
+                    .map(|item| dbg!(item.score()))
+                    .ok_or_else(|| println!("compartments have no items in common"))
+            })
+        })
+        .sum();
+}
+
+
+pub fn part2_pure(puzzle_input: &mut Vec<String>) -> i32 {
+    // split puzzle_input into groups of 3 
+    let groups: Vec<Vec<String>> = puzzle_input
         .chunks(3)
         .map(|chunk| chunk.to_vec())
         .collect();
-
-    // let default: Vec<String> = Vec::from(["default".to_string()]);
-    // let common_chars = groups
-    //     .iter()
-    //     .skip(1)
-    //     .find(|group| {
-    //         let first = group[0].chars();
-    //         let second = group[1].chars();
-    //         let third = group[2].chars();
-    //         first.zip(second).zip(third).all(|((a, b), c)| a == b && b == c)
-    //     })
-    //     .unwrap_or_else(|| &&default);
-
 
     let common_chars: Vec<Vec<u32>> = groups
         .iter()
@@ -84,13 +116,21 @@ pub fn part2(lines: &mut Vec<String>) -> i32 {
             let second: Vec<u32> = group[1].chars().map(|c| c as u32).collect();
             let third:  Vec<u32> = group[2].chars().map(|c| c as u32).collect();
             
-            return first.iter()
-                .zip(second.iter())
-                .zip(third.iter())
-                .filter(|((a,b),c)| a == b && b == c)
-                
+            println!("{:?}\n{:?}\n{:?}", first, second, third);
 
+            // let dwa: Vec<u32> = first.iter()
+            //     .zip(second.iter())
+            //     .zip(third.iter())
+            //     .map(|((a,b),c)| {
+            //         println!("{:?} | {:?} | {:?}", char::from_u32(*a),char::from_u32(*b),char::from_u32(*c));
+            //         return *c
+            //     })
+            //     // .filter(|((a,b),c)| a == b && b == c)
+            //     .collect::<Vec<u32>>();
+            // println!("{:?}", dwa);
 
+            
+            return dwa
             // return first
             //     .iter()
             //     .enumerate()
@@ -99,8 +139,7 @@ pub fn part2(lines: &mut Vec<String>) -> i32 {
             //         // they are of different lengths
             //         // fuck
             //     })
-                .map(|(i, c)| *c)
-                .collect::<Vec<u32>>()
+
         })
         .collect();
 
@@ -135,3 +174,4 @@ pub fn part2(lines: &mut Vec<String>) -> i32 {
     //     })
     //     .sum();
 }
+*/

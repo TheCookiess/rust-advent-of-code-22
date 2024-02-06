@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_variables)]
 use std::collections::HashMap;
 
-pub fn part1(lines: &mut Vec<String>) -> i32 {
+pub fn part1(puzzle_input: &mut Vec<String>) -> i32 {
     // [A, X]: Rock         1 pt
     // [B, Y]: Paper        2 pt
     // [C, Z]: Scissors     3 pt
@@ -17,7 +17,7 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
         (&'C', 3),
     ]);
 
-    let mut games = lines
+    let mut games = puzzle_input
     .iter()
     .map(|str| str.chars().filter(|c| c != &' ').collect::<Vec<char>>())
     .collect::<Vec<Vec<char>>>();
@@ -53,7 +53,7 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
     return points;
 }
 
-pub fn part2(lines: &mut Vec<String>) -> i32 {
+pub fn part2(puzzle_input: &mut Vec<String>) -> i32 {
     let lose_map: HashMap<&char, char> = HashMap::from([
         (&'A', 'C'), // if chosen Rock     >> Scissors == lose 
         (&'B', 'A'), // if chosen Paper    >> Rock     == lose
@@ -72,7 +72,7 @@ pub fn part2(lines: &mut Vec<String>) -> i32 {
         (&'C', 3),
     ]);
 
-    let mut games = lines
+    let mut games = puzzle_input
         .iter()
         .map(|str| str.chars().filter(|c| c != &' ').collect::<Vec<char>>())
         .collect::<Vec<Vec<char>>>();

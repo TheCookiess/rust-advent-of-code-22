@@ -1,11 +1,11 @@
 #![allow(dead_code, unused_variables)]
 
-pub fn part1(lines: &mut Vec<String>) -> i32 {
+pub fn part1(puzzle_input: &mut Vec<String>) -> i32 {
     // split by space (empty line) >> new vectors
     // for each vector: sum the calories
     // if cur_vector's cur_calories > most_calories, set most_calories = cur_calories, largest_idx = cur_idx
     
-    let calorie_sets: Vec<Vec<String>> = lines
+    let calorie_sets: Vec<Vec<String>> = puzzle_input
         .split(|line| line == "")
         .map(|line| line.to_vec())
         .collect();
@@ -24,9 +24,9 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
     return most_calories;
 }
 
-pub fn part2(lines: &mut Vec<String>) -> i32 {
+pub fn part2(puzzle_input: &mut Vec<String>) -> i32 {
 
-    let calorie_sets: Vec<Vec<String>> = lines
+    let calorie_sets: Vec<Vec<String>> = puzzle_input
     .split(|line| line == "")
     .map(|line| line.to_vec())
     .collect();

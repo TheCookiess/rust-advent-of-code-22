@@ -5,15 +5,6 @@ mod days {
 }
 
 use std::io::{self, BufRead};
-trait StringUtils {
-    fn substring(&self, start: usize, len: usize) -> Self;
-}
-
-impl StringUtils for String {
-    fn substring(&self, start: usize, len: usize) -> Self {
-        self.chars().skip(start).take(len).collect()
-    }
-}
 
 fn main() {
     print!("\n\n");
@@ -23,19 +14,35 @@ fn main() {
     print!("\n\n");
 
     // ------------------------------
-    let day = 3;
-    use days::day_3 as puzzle;
+    let day = 1;
+    use days::day_1 as puzzle;
     // ------------------------------
 
-    let path = format!("./src/data/day_{}.txt", day);
+    let path = format!("./data/day_{}.txt", day);
     let file = std::fs::File::open(&path).unwrap_or_else(|_| panic!("\n[AOC] Error opening file\n"));
     let reader = io::BufReader::new(file);
     
-    let mut lines = reader
+    let data = reader
         .lines()
         .map(|line| line.unwrap())
-        .collect::<Vec<String>>();  
+        .collect::<Vec<String>>();
+    let test_cases: Vec<Vec<String>> = data
+        .split(|str| *str == ">>TEST_END<<".to_string())
+        .map(|str| str.to_vec())
+        .collect::<Vec<Vec<String>>>();
 
-    println!("Day {}, Part 1: {}", day, puzzle::part1(&mut lines));
-    println!("Day {}, Part 2: {}", day, puzzle::part2(&mut lines));
+    let mut console_input = String::new();
+    std::io::stdin().read_line(&mut console_input).unwrap();
+    let test_case = console_input.to_lowercase(); 
+
+    let practice_case: &str = "t";
+    let mut puzzle_input: Vec<String>;
+    if test_case.contains(practice_case) { 
+        puzzle_input = test_cases[0].clone();
+    } else { 
+        puzzle_input = test_cases[1].clone(); 
+    }
+    
+    println!("Day {}, Part 1: {}", day, puzzle::part1(&mut puzzle_input));
+    println!("Day {}, Part 2: {}", day, puzzle::part2(&mut puzzle_input));
 }

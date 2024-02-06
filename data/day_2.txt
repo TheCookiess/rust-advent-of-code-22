@@ -1,3 +1,7 @@
+A Y
+B X
+C Z
+>>TEST_END<<
 C Y
 C Y
 B Y
