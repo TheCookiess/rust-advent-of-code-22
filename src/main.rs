@@ -1,47 +1,42 @@
 mod days {
     pub mod day_1;
+    pub mod day_2;
+    pub mod day_3;
 }
 
 use std::io::{self, BufRead};
-use days::*;
+trait StringUtils {
+    fn substring(&self, start: usize, len: usize) -> Self;
+}
 
-
-
+impl StringUtils for String {
+    fn substring(&self, start: usize, len: usize) -> Self {
+        self.chars().skip(start).take(len).collect()
+    }
+}
 
 fn main() {
-    // if let Ok(lines) = read_lines("./data/day_1.txt") {
-    //     for line in lines.flatten() {
-    //         println!("{}", line);
-    //     }
-    // }
-
-    // let file = std::fs::File::open(path);
-    // if file.is_err() {
-    //     println!("Error opening file: {:?}", file);
-    //     return;
-    // }
-
-    // if let Err(e) = std::fs::File::open(path) {
-    //     println!("Error opening file: {:?}", e);
-    //     return;
-    // }
-
     print!("\n\n");
     for _ in 0..34 { print!("-"); }
     println!("\n\n >> Rust: Advent of Code 2022 << \n");
     for _ in 0..34 { print!("-"); }
     print!("\n\n");
 
-    
-    let day = 1;
+    // ------------------------------
+    let day = 3;
+    use days::day_3 as puzzle;
+    // ------------------------------
+
     let path = format!("./src/data/day_{}.txt", day);
-    let file = std::fs::File::open(&path).unwrap_or_else(|_| panic!("Error opening file"));
+    let file = std::fs::File::open(&path).unwrap_or_else(|_| panic!("\n[AOC] Error opening file\n"));
     let reader = io::BufReader::new(file);
     
-    let mut lines = reader.lines()
+    let mut lines = reader
+        .lines()
         .map(|line| line.unwrap())
         .collect::<Vec<String>>();  
-  
-    println!("Day 1, Part 1: {}", day_1::part1(&mut lines));
-    println!("Day 1, Part 2: {}", day_1::part2(&mut lines));
+
+
+    println!("Day {}, Part 1: {}", day, puzzle::part1(&mut lines));
+    println!("Day {}, Part 2: {}", day, puzzle::part2(&mut lines));
 }

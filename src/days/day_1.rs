@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_variables)]
+
 pub fn part1(lines: &mut Vec<String>) -> i32 {
     // split by space (empty line) >> new vectors
     // for each vector: sum the calories
