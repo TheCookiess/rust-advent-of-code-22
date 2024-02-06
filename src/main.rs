@@ -36,7 +36,6 @@ fn main() {
         .map(|line| line.unwrap())
         .collect::<Vec<String>>();  
 
-
     println!("Day {}, Part 1: {}", day, puzzle::part1(&mut lines));
     println!("Day {}, Part 2: {}", day, puzzle::part2(&mut lines));
 }

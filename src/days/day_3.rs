@@ -33,7 +33,6 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
 
 // pub fn part1_pure(lines: &mut Vec<String>) -> i32 {
 //     use std::collections::HashSet;
-
 //     return lines
 //         .iter()
 //         .map(|line| -> Result<_> {
@@ -58,7 +57,81 @@ pub fn part1(lines: &mut Vec<String>) -> i32 {
 // }
 
 pub fn part2(lines: &mut Vec<String>) -> i32 {
-    
+    // split lines into groups of 3 
+    let groups: Vec<Vec<String>> = lines
+        .chunks(3)
+        .map(|chunk| chunk.to_vec())
+        .collect();
 
-    return 5;
+    // let default: Vec<String> = Vec::from(["default".to_string()]);
+    // let common_chars = groups
+    //     .iter()
+    //     .skip(1)
+    //     .find(|group| {
+    //         let first = group[0].chars();
+    //         let second = group[1].chars();
+    //         let third = group[2].chars();
+    //         first.zip(second).zip(third).all(|((a, b), c)| a == b && b == c)
+    //     })
+    //     .unwrap_or_else(|| &&default);
+
+
+    let common_chars: Vec<Vec<u32>> = groups
+        .iter()
+        .skip(1)
+        .map(|group| {
+            let first:  Vec<u32> = group[0].chars().map(|c| c as u32).collect();
+            let second: Vec<u32> = group[1].chars().map(|c| c as u32).collect();
+            let third:  Vec<u32> = group[2].chars().map(|c| c as u32).collect();
+            
+            return first.iter()
+                .zip(second.iter())
+                .zip(third.iter())
+                .filter(|((a,b),c)| a == b && b == c)
+                
+
+
+            // return first
+            //     .iter()
+            //     .enumerate()
+            //     .filter(|(i,c)| {
+            //         // *c == &second[*i] && second[*i] == third[*i]
+            //         // they are of different lengths
+            //         // fuck
+            //     })
+                .map(|(i, c)| *c)
+                .collect::<Vec<u32>>()
+        })
+        .collect();
+
+    println!("{:?}", common_chars);
+    
+    let lower_offset: i32 = 96;
+    let upper_offset: i32 = 64 - 26;
+    return common_chars
+        .iter()
+        .map(|nums| {
+            nums.iter()
+                .map(|num| {
+                    let temp: i32 = *num as i32;
+                    if temp > lower_offset { return temp - lower_offset } // lower_case
+                    return temp - upper_offset
+                })
+                .collect::<Vec<i32>>()
+        })
+        .flatten()
+        .sum::<i32>()
+
+        // return common_chars
+    //     .iter()
+    //     // .filter(|str| str != &&default[0])
+    //     .map(|str| {
+    //         str.chars()
+    //             .map(|c|{
+    //                 if c.is_lowercase() { return c as i32 - lower_offset; }
+    //                 return c as i32 - upper_offset;
+    //             })
+    //             .sum::<i32>()
+    //     })
+    //     .sum();
 }
